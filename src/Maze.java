@@ -51,7 +51,7 @@ public class Maze {
             }
         }
 
-
+        swap(maze);//if width's number is even
         Stack<Cell> stack = new Stack<Cell>();
         Cell start = maze[1][1];
         start.visited = true;
@@ -82,7 +82,7 @@ public class Maze {
 
             //Right
 
-            if (cur.y + 2 < width ) {
+            if (cur.y + 2 < width - 1) {
 
                 Cell right = maze[cur.x][cur.y + 2];
                 if (!right.visited)
@@ -97,22 +97,72 @@ public class Maze {
                 stack.push(nextCell);
             }
         }
-            for(int i = 0; i < maze.length; i++) {
 
+
+        for(int i = 2; i < maze.length - 1; i += 2) {
+            List<Cell> list = new ArrayList<>();
+            for(int j = 1; j < maze[0].length - 1; j++) {
+                if(maze[i][j].value == 1) {
+                    list.add(maze[i][j]);
+                }
             }
+            if(list.size() > 0) {
+                Cell pickedCell = list.get(new Random().nextInt(list.size()));
+                pickedCell.value = 0;
+            }
+        }
+
         return maze;
 
 
     }
 
+    private void swap(Cell[][] maze) {
+        int width = maze[0].length;
+        for(int i = 0; i < maze.length ; i++) {
+            int temp = maze[i][width - 1].value;
+            maze[i][width - 1].value = maze[i][width - 2].value;
+            maze[i][width - 2].value = temp;
+        }
+    }
+
+    private boolean validMaze(Cell[][] maze) {
+       for(int i = 1; i < maze.length - 1; i++) {
+           for(int j = 1; j < maze[0].length - 1; j++) {
+               int up = i - 1;
+               int down = i + 1;
+               int left = j - 1;
+               int val = maze[i][j].value;
+               if(maze[up][j].value == val && maze[down][j].value == val
+               && maze[i][left].value == val && maze[i - 1][j - 1].value == val) {
+                   return false;
+               }
+
+           }
+       }
+       return true;
+    }
+
     public static void main(String[] args) {
         Maze m = new Maze();
-        Cell[][] maze = m.generateMaze(19, 15);
-        for(int i = 0; i < maze.length; i++){
-            for(int j = 0; j < maze[0].length; j++){
-                System.out.print(maze[i][j].value + " ");
+
+        while(true) {
+            Cell[][] maze = m.generateMaze(20, 15);
+            if(m.validMaze(maze)) {
+                for(int i = 0; i < maze.length; i++){
+                    for(int j = 0; j < maze[0].length; j++){
+                        System.out.print(maze[i][j].value + " ");
+                    }
+                    System.out.println();
+                }
+
+                break;
             }
-            System.out.println();
+
         }
+
+
+
+
     }
 }
