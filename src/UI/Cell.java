@@ -9,7 +9,6 @@ package UI;
  * will be a better idea to separate them
  */
 
-
 public class Cell {
     public int x;
     public int y;
